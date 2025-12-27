@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+export const runtime = "edge";
 const avatarList = [
   {
     image: "/images/home/avatar_1.jpg",

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+export const runtime = "edge";
 const headerData = [
   { label: "Modeller", href: "/#models" },
   { label: "Kategoriler", href: "/#categories" },

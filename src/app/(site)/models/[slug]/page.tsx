@@ -1,7 +1,7 @@
 import ModelDetailsContainer from "@/app/components/models/models-details";
 import { prefetchProductsBySlug } from "@/lib/supabase/prefetch-helpers";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
+export const runtime = "edge";
 export default async function ModelDetailsPage({
   params,
 }: {
