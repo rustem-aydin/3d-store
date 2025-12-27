@@ -28,7 +28,7 @@ export default function Home() {
       {/* ---------------------Brand logo section Ends-----------------  */}
 
       {/* ---------------------Web result section Starts-----------------  */}
-      <Models />
+      <Models limit={10} />
       <WebResult />
       {/* ---------------------Web result section Ends-----------------  */}
 
