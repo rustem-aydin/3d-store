@@ -16,23 +16,25 @@ function CollectionList({ slug }: { slug: string }) {
   });
   return (
     <section id="services">
-      <div className="2xl:pt-44  py-11">
-        <div className="container">
+      <div className="2xl:pt-44  py-24">
+        <div className="container ">
           <h5
             style={{
               backgroundColor: `${collection?.collectionInfo?.color}1A`,
               color: collection?.collectionInfo?.color,
             }}
-            className={`inline-flex text-6xl  px-8 py-0  gap-2 rounded-full items-center`}
+            className={`inline-flex mb-8 text-2xl md:text-6xl  md:px-8 py-0 px-2 gap-2 rounded-full items-center`}
           >
             <span className="instrument-font italic font-normal">
               {collection?.collectionInfo?.name}
             </span>
           </h5>
           <h1
-            className={`inline-flex text-6xl  px-4 gap-2 rounded-full items-center`}
+            className={`inline-flex text-6xl  px-2 md:px-4 gap-2 rounded-full items-center`}
           >
-            <span className="instrument-font  font-normal">3D Modelleri</span>
+            <span className="instrument-font text-xl md:text-6xl font-normal">
+              3D Modelleri
+            </span>
           </h1>
         </div>
         <div ref={ref} className=" px-4 max-w-7xl mx-auto">
