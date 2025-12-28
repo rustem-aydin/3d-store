@@ -37,7 +37,7 @@ export default async function Home() {
       <Innovation />
       <OnlinePresence />
       <CreativeMind />
-      <CustomerStories />
+      {/* <CustomerStories /> */}
       <Subscription />
       {/* ---------------------Subscription section Ends-----------------  */}
       {/* ---------------------Faq section Starts-----------------  */}
