@@ -1,30 +1,12 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import StarRating from "../../shared/star-rating";
 import { TextGenerateEffect } from "@/app/components/ui/text-generate-effect";
+import { Car, Castle, Cpu } from "lucide-react";
 
 function HeroSection() {
-  const ref = useRef(null);
-  const [avatarList, setAvatarList] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/page-data");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setAvatarList(data);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const bottomAnimation = {
     initial: { y: "20%", opacity: 0 },
     animate: { y: 0, opacity: 1 },
@@ -35,7 +17,7 @@ function HeroSection() {
     <section>
       <div className="relative w-full pt-44 2xl:pb-20 pb-10 before:absolute before:w-full before:h-full before:bg-linear-to-r before:from-blue_gradient before:via-white before:to-yellow_gradient before:rounded-full before:top-24 before:blur-3xl before:-z-10 dark:before:from-dark_blue_gradient dark:before:via-black dark:before:to-dark_yellow_gradient dark:before:rounded-full dark:before:blur-3xl dark:before:-z-10">
         <div className="container relative z-10">
-          <div ref={ref} className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8">
             {/* ---------------- heading text --------------- */}
             <div
               // {...bottomAnimation}
@@ -55,22 +37,36 @@ function HeroSection() {
                 varlıklara anında ulaşın.
               </p>
               <div className="mt-6">
-                {avatarList?.WebResultTagList?.map((items: any, index: any) => (
-                  <span
-                    key={index}
-                    className={`inline-flex m-2 py-2 px-6 gap-4 rounded-full ${items.bg_color} ${items.txt_color} items-center`}
-                  >
-                    <Image
-                      src={items.image}
-                      alt={items.name}
-                      width={32}
-                      height={32}
-                    />
-                    <span className="instrument-font italic font-normal text-xl md:text-2xl">
-                      {items.name}
-                    </span>
+                <Link
+                  href={"/collections/araba-parcalari"}
+                  className={`inline-flex m-2 py-2 px-6 gap-4 rounded-full bg-red-500/10 text-red-500 items-center`}
+                >
+                  <Car></Car>
+
+                  <span className="instrument-font italic font-normal text-xl md:text-2xl">
+                    {"Araba Parçaları"}
                   </span>
-                ))}
+                </Link>
+                <Link
+                  href={"/collections/tarihi-yerler"}
+                  className={`inline-flex m-2 py-2 px-6 gap-4 rounded-full bg-yellow-500/10 text-yellow-500 items-center`}
+                >
+                  <Castle></Castle>
+
+                  <span className="instrument-font italic font-normal text-xl md:text-2xl">
+                    {"Tarihi Yerler"}
+                  </span>
+                </Link>
+                <Link
+                  href={"/collections/teknoloji"}
+                  className={`inline-flex m-2 py-2 px-6 gap-4 rounded-full bg-purple-500/10 text-purple-500 items-center`}
+                >
+                  <Cpu></Cpu>
+
+                  <span className="instrument-font italic font-normal text-xl md:text-2xl">
+                    {"Teknoloji"}
+                  </span>
+                </Link>
               </div>
             </div>
 
@@ -117,33 +113,6 @@ function HeroSection() {
                     />
                   </svg>
                 </Link>
-
-                {/* --------------- avatar division -------------- */}
-                <div className="flex items-center gap-7">
-                  <ul className="avatar flex flex-row items-center">
-                    {avatarList?.avatarList?.map((items: any, index: any) => (
-                      <li key={index} className="-mr-2 z-1 avatar-hover:ml-2">
-                        <Image
-                          src={items.image}
-                          alt="Image"
-                          width={44}
-                          height={44}
-                          quality={100}
-                          className="rounded-full border-2 border-white"
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                  {/* -------------- Star rating division --------------- */}
-                  <div className="gap-1 flex flex-col">
-                    <div>
-                      <StarRating count={4} color="#F59E0B" />
-                    </div>
-                    <p className="text-sm font-normal text-dark_black/60 dark:text-white/60">
-                      1000+ tasarımcı tarafından güveniliyor
-                    </p>
-                  </div>
-                </div>
               </div>
             </motion.div>
           </div>

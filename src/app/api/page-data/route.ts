@@ -131,27 +131,6 @@ const creativeMindList = [
   },
 ];
 
-const WebResultTagList = [
-  {
-    image: "/images/home/result/creativity.svg",
-    name: "Yaratıcılık",
-    bg_color: "bg-purple/20",
-    txt_color: "text-purple",
-  },
-  {
-    image: "/images/home/result/innovation.svg",
-    name: "İnovasyon",
-    bg_color: "bg-blue/20",
-    txt_color: "text-blue",
-  },
-  {
-    image: "/images/home/result/strategy.svg",
-    name: "Kalite",
-    bg_color: "bg-orange/20",
-    txt_color: "text-orange",
-  },
-];
-
 const startupPlanList = [
   {
     plan_bg_color: "bg-pale-yellow",
@@ -259,7 +238,6 @@ export const GET = async () => {
     innovationList,
     onlinePresenceList,
     creativeMindList,
-    WebResultTagList,
     startupPlanList,
     faqList,
     achievementsList,
