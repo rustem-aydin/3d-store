@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export const headerData = [
   { label: "Tüm Modeller", href: "/models" },
-  { label: "Kategoriler", href: "/#categories" },
+  { label: "Koleksiyonlar", href: "/collections" },
   { label: "Yeni Gelenler", href: "/#new-arrivals" },
   { label: "Popüler", href: "/#popular" },
   { label: "Fiyatlandırma", href: "/#pricing" },

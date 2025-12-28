@@ -1,65 +1,51 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
-import { TextGenerateEffect } from "@/app/components/ui/text-generate-effect";
+import { useCollections } from "@/lib/supabase/hooks/useCollections";
+import { TextGenerateEffect } from "../../ui/text-generate-effect";
+import DynamicIcon from "../../dynamic-icon";
 
-function Innovation() {
+function Innovation({ limit }: { limit?: number }) {
+  const { data: categories, isLoading, error } = useCollections(limit);
   const ref = useRef(null);
   const inView = useInView(ref);
-  const [innovationList, setinnovationList] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/page-data");
-        if (!res.ok) throw new Error("Failed to fetch");
-
-        const data = await res.json();
-        setinnovationList(data?.innovationList);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const bottomAnimation = (index: any) => ({
-    initial: { y: "25%", opacity: 0 },
-    animate: inView ? { y: 0, opacity: 1 } : { y: "25%", opacity: 0 },
-    transition: { duration: 0.3, delay: 0.3 + index * 0.3 },
-  });
   return (
     <section id="services">
       <div ref={ref} className="2xl:py-20 py-11">
+        <div className="flex flex-col gap-10 md:gap-20">
+          <div
+            className="relative flex flex-col mb-8
+        16 text-center items-center"
+          >
+            <h2 className="font-medium w-full max-w-32">
+              <TextGenerateEffect
+                words="Sizden haber almayı çok isteriz,"
+                duration={0.5}
+              />
+              <TextGenerateEffect
+                words="İletişime Geçin"
+                delay={1.5}
+                className="italic font-normal instrument-font"
+              />
+            </h2>
+          </div>
+        </div>
         <div className="container">
           <div className="flex flex-col gap-12">
             <div className="flex flex-col justify-center items-center gap-10 lg:gap-16">
-              <motion.div
-                {...bottomAnimation(1)}
-                className="max-w-(--breakpoint-Xsm) text-center"
-              >
-                <h2>
-                  <TextGenerateEffect
-                    words="Kalite ve detayların"
-                    delay={0.4}
-                  />
-                  <TextGenerateEffect
-                    words="buluşma noktası"
-                    delay={1}
-                    className="italic font-normal instrument-font"
-                  />
-                </h2>
-              </motion.div>
               <div ref={ref} className="w-full">
                 <div className="grid auto-rows-max grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-6 w-full">
-                  {innovationList?.map((items: any, index: any) => {
+                  {categories?.map((items: any, index: any) => {
                     return (
                       <motion.div
                         key={index}
-                        className={`${items.bg_color} flex flex-col p-8 rounded-2xl gap-6 lg:gap-9`}
+                        style={{
+                          backgroundColor: `${items.color}1A`,
+                        }}
+                        className={`${items.color} flex flex-col p-8 rounded-2xl gap-6 lg:gap-9`}
                         initial={{
                           scale: 1.2,
                           opacity: 0,
@@ -76,26 +62,33 @@ function Innovation() {
                           ease: "easeInOut",
                         }}
                       >
-                        <div>
-                          <Image
-                            src={items.image}
-                            alt="image"
-                            height={40}
-                            width={40}
-                          />
-                        </div>
-                        <div>
-                          <h3 className={`text-2xl ${items.txt_color}`}>
-                            {items.title
-                              .split("\n")
-                              ?.map((line: any, i: number) => (
-                                <React.Fragment key={i}>
-                                  {line}
-                                  <br />
-                                </React.Fragment>
-                              ))}
-                          </h3>
-                        </div>
+                        <Link
+                          style={{
+                            color: items.color,
+                          }}
+                          href={`/collections/${items?.collection_slug}`}
+                        >
+                          <div>
+                            <h3
+                              style={{
+                                color: items.color,
+                              }}
+                              className={`text-2xl  ${items.color}`}
+                            >
+                              {items?.name}
+                            </h3>
+                          </div>
+                          <div>
+                            <p
+                              style={{
+                                color: items.color,
+                              }}
+                              className={`text-md  ${items.color}`}
+                            >
+                              {items?.collection_products[0].count} Model
+                            </p>
+                          </div>
+                        </Link>
                       </motion.div>
                     );
                   })}

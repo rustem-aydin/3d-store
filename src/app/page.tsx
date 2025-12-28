@@ -11,55 +11,41 @@ import Solutions from "./components/home/solution";
 import Subscription from "./components/home/subscription";
 import WebResult from "./components/home/web-result";
 import Models from "./components/models/models-list";
+import {
+  prefetchCollections,
+  prefetchProducts,
+} from "@/lib/supabase/prefetch-helpers";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
   title: "3D Market | Premium 3D Modeller",
 };
 
-export default function Home() {
+export default async function Home() {
+  const queryClient = await prefetchProducts(10);
+  const collections = await prefetchCollections();
   return (
     <main>
-      {/* ---------------------Hero section Starts-----------------  */}
       <HeroSection />
-      {/* ---------------------Hero section Ends-----------------  */}
-
-      {/* ---------------------Brand logo section Starts-----------------  */}
-      <Brand />
-      {/* ---------------------Brand logo section Ends-----------------  */}
-
-      {/* ---------------------Web result section Starts-----------------  */}
-      <Models limit={10} />
+      <HydrationBoundary state={dehydrate(collections)}>
+        <Brand limit={10} />
+      </HydrationBoundary>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Models limit={10} />
+      </HydrationBoundary>
       <WebResult />
-      {/* ---------------------Web result section Ends-----------------  */}
-
-      {/* ---------------------Innovation section Starts-----------------  */}
       <Innovation />
-      {/* ---------------------Innovation section Ends-----------------  */}
-
-      {/* ---------------------Online presence section Starts-----------------  */}
       <OnlinePresence />
-      {/* ---------------------Online presence section Ends-----------------  */}
-
-      {/* ---------------------Creative mind section Starts-----------------  */}
       <CreativeMind />
-      {/* ---------------------Creative mind section Ends-----------------  */}
-
-      {/* ---------------------Customer Stories section Starts-----------------  */}
       <CustomerStories />
-      {/* ---------------------Customer Stories section Ends-----------------  */}
-
-      {/* ---------------------Subscription section Starts-----------------  */}
       <Subscription />
       {/* ---------------------Subscription section Ends-----------------  */}
-
       {/* ---------------------Faq section Starts-----------------  */}
       <Faq />
       {/* ---------------------Faq section Ends-----------------  */}
-
       {/* ---------------------Achievements section Starts-----------------  */}
       <Achievements />
       {/* ---------------------Achievements section Ends-----------------  */}
-
       {/* ---------------------Solutions section Starts-----------------  */}
       <Solutions />
       {/* ---------------------Solutions section Ends-----------------  */}

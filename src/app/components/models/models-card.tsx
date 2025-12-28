@@ -39,7 +39,7 @@ export function ModelCard({
       )}
       {...props}
     >
-      <Link href={`models/${slug_text}`}>
+      <Link href={`/models/${slug_text}`}>
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 z-0">
             <img
