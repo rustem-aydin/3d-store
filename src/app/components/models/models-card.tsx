@@ -4,7 +4,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
-import { InteractiveProductCardProps } from "@/types/model-types";
+import { BlurImage } from "../images/blur-image";
 
 export function ModelCard({
   className,
@@ -16,7 +16,7 @@ export function ModelCard({
   formats,
   isPremium,
   ...props
-}: InteractiveProductCardProps) {
+}: any) {
   const cardRef = React.useRef<HTMLDivElement>(null);
   const [style, setStyle] = React.useState<React.CSSProperties>({});
 
@@ -34,7 +34,7 @@ export function ModelCard({
       onMouseLeave={handleMouseLeave}
       style={style}
       className={cn(
-        "group relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-neutral-900 shadow-2xl cursor-pointer",
+        "group relative w-full aspect-4/5 rounded-lg overflow-hidden bg-neutral-900 shadow-2xl cursor-pointer",
         className
       )}
       {...props}
@@ -49,7 +49,7 @@ export function ModelCard({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
           </div>
-          <Image
+          <BlurImage
             src={imageUrl}
             alt={title}
             fill
@@ -89,7 +89,7 @@ export function ModelCard({
               {title}
             </h3>
             <div className="flex gap-1.5 mt-1 md:mt-2">
-              {formats.map((f) => (
+              {formats.map((f: any) => (
                 <span
                   key={f}
                   className="text-[7px] md:text-[9px] px-0.5 md:px-1.5 py-0.5 mb-0.5 md:mb-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded"

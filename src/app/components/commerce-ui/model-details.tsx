@@ -29,6 +29,7 @@ export interface ProductSelectionPayload {
 const DEFAULT_PRODUCT_IMAGES: CarouselImage[] = [
   {
     title: "Logo",
+    display_order: 1,
     url: "https://raw.githubusercontent.com/stackzero-labs/ui/refs/heads/main/public/placeholders/coffee-machine-01.jpg",
   },
 ];
@@ -40,6 +41,7 @@ function ModelDetails({
   defaultImages = [],
   errorMessage = null,
   rating = 4.8,
+  product_files = [],
   viewCount = 0,
   downloadCount = 0,
   likeCount = 0,
@@ -119,7 +121,8 @@ function ModelDetails({
 
             <div className="relative z-10 flex h-full items-center justify-center p-6">
               <ImageCarouselBasic
-                images={images.length > 0 ? images : defaultImages}
+                product_files={product_files}
+                images={images?.length > 0 ? images : defaultImages}
                 showThumbs={true}
                 thumbPosition="bottom"
                 className="mx-auto"

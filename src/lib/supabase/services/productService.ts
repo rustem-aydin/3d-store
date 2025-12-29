@@ -1,6 +1,8 @@
 // services/productService.ts
 
-import { supabase } from "..";
+import { createClient } from "..";
+
+const supabase = createClient();
 
 export const productService = {
   // İlk 20 veya belirli limitli ürünleri getir
@@ -11,6 +13,7 @@ export const productService = {
         `
         *,
         product_images(image_url, display_order),
+       
         collection_products(collections(name))
       `
       ) // İlişkili tabloları da tek seferde çekiyoruz
@@ -51,5 +54,32 @@ export const productService = {
     console.log(data);
     if (error) throw error;
     return data;
+  },
+  getProductFilesBySlug: async (slug: string) => {
+    const { data, error } = await supabase
+      .from("products")
+      .select(
+        `
+        id,
+        title,
+        product_files (
+          id,
+          file_name,
+          file_url,
+          file_type,
+          file_size
+        )
+      `
+      )
+      .eq("slug_text", slug)
+      .single(); // Unique slug olduğu için tek satır alıyoruz
+
+    if (error) {
+      console.error("Dosyalar çekilirken hata:", error.message);
+      throw error;
+    }
+
+    // Veriyi sadeleştirerek (flatten) sadece dosya listesini döndürüyoruz
+    return data?.product_files || [];
   },
 };

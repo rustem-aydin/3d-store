@@ -32,6 +32,12 @@ export default function ModelDetailsContainer({ slug }: { slug: string }) {
           url: img.image_url,
           title: product.title,
         }))}
+        product_files={product?.product_files?.map((file: any) => ({
+          url: file.file_url,
+          title: file.title || "3D Model",
+          display_order: file.display_order,
+          type: "model", // Bunun bir model olduğunu belirtiyoruz
+        }))}
         onAddToCart={(payload) => {
           addItem({
             id: product.id,

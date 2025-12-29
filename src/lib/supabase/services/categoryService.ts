@@ -1,4 +1,6 @@
-import { supabase } from "..";
+import { createClient } from "..";
+
+const supabase = createClient();
 
 export const collectionService = {
   getCollections: async (limit = 20) => {

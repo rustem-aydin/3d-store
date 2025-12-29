@@ -1,11 +1,19 @@
-import { CarouselImage } from "@/app/components/commerce-ui/image-carousel-basic";
 import { ProductSelectionPayload } from "@/app/components/commerce-ui/model-details";
+
+export type CarouselImage = {
+  title?: string;
+  url: string;
+  display_order?: number;
+  type?: "image" | "video" | "model";
+  thumbnailUrl?: string;
+};
 
 export interface ModelProps {
   title?: string;
   description?: string;
   price?: number;
   price_digital: number;
+
   badge?: string | null;
   rating?: number;
   reviewCount?: number;
@@ -16,6 +24,7 @@ export interface ModelProps {
   author?: string;
   warranty?: string;
   images?: CarouselImage[];
+  product_files?: CarouselImage[]; // STL Dosyaları buraya gelecek
   defaultImages?: CarouselImage[];
   quantity?: number;
   onQuantityChange?: (quantity: number) => void;
@@ -33,15 +42,4 @@ export interface ModelProps {
     reviewerName: string;
     reviewerTitle: string;
   };
-}
-
-export interface InteractiveProductCardProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  imageUrl: string;
-  title: string;
-  slug_text: string;
-  category: string;
-  price: string;
-  formats: string[];
-  isPremium?: boolean;
 }

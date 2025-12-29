@@ -20,18 +20,71 @@ import {
   MinusCircle,
   PlusCircle,
   X,
+  Play,
+  Box,
 } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { BlurImage } from "../images/blur-image";
 import Image from "next/image";
+import STLViewer from "../viewer-3d"; // STLViewer bileşeninin yolu
 
-type ThumbPropType = {
-  selected: boolean;
-  index: number;
-  onClick: () => void;
-  imgUrl: string;
+// --------------------------------------------------------
+// TYPES
+// --------------------------------------------------------
+
+export type CarouselImage = {
   title?: string;
+  url: string;
+  display_order?: number;
+  type?: "image" | "video" | "model";
+  thumbnailUrl?: string;
+};
+
+interface ImageCarousel_BasicProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  images: CarouselImage[]; // Normal görseller
+  product_files?: CarouselImage[]; // STL Dosyaları (Saf liste olarak gelir)
+  opts?: EmblaOptionsType;
+  showCarouselControls?: boolean;
+  showImageControls?: boolean;
+  imageFit?: "cover" | "contain" | "fill";
+  aspectRatio?: "square" | "video" | "wide" | "auto";
+  thumbPosition?: "bottom" | "top" | "left" | "right";
+  showThumbs?: boolean;
+  selectedIndex?: number;
+  onSlideChange?: (index: number) => void;
+  classNameImage?: string;
+  classNameThumbnail?: string;
+}
+
+// --------------------------------------------------------
+// UTILS
+// --------------------------------------------------------
+
+const getMediaType = (
+  url: string,
+  explicitType?: "image" | "video" | "model"
+): "image" | "video" | "model" => {
+  if (explicitType) return explicitType;
+  if (!url) return "image";
+  const cleanUrl = url.split("?")[0].toLowerCase();
+
+  const videoExtensions = [
+    ".mp4",
+    ".webm",
+    ".ogg",
+    ".mov",
+    ".avi",
+    ".mkv",
+    ".m4v",
+  ];
+  if (videoExtensions.some((ext) => cleanUrl.endsWith(ext))) return "video";
+
+  const modelExtensions = [".stl", ".obj", ".glb", ".gltf"];
+  if (modelExtensions.some((ext) => cleanUrl.endsWith(ext))) return "model";
+
+  return "image";
 };
 
 const getAspectRatioClass = (ratio?: string) => {
@@ -49,176 +102,9 @@ const getAspectRatioClass = (ratio?: string) => {
   }
 };
 
-const ImageContainer: React.FC<{
-  image: { url: string; title?: string };
-  alt: string;
-  fit?: "cover" | "contain" | "fill";
-  aspectRatio?: string;
-  showImageControls?: boolean;
-  classNameImage?: string;
-  classNameThumbnail?: string;
-}> = ({
-  alt,
-  aspectRatio,
-  classNameImage,
-  classNameThumbnail,
-  fit = "cover",
-  image,
-  showImageControls,
-}) => {
-  return (
-    <div
-      className={cn(
-        "relative w-full overflow-hidden rounded-lg bg-gray-100",
-        getAspectRatioClass(aspectRatio)
-      )}
-    >
-      <Dialog>
-        <DialogTrigger asChild>
-          <div className={`cursor-pointer`}>
-            <BlurImage
-              lazy
-              imageClassName={cn(
-                "absolute inset-0 h-full w-full",
-                fit === "contain" && "object-contain",
-                fit === "cover" && "object-cover",
-                fit === "fill" && "object-fill",
-                classNameThumbnail
-              )}
-              src={image.url}
-              alt={image.title || alt}
-              width={400}
-              height={600}
-            />
-          </div>
-        </DialogTrigger>
-
-        <DialogPortal>
-          <DialogOverlay className="fixed inset-0 z-50 bg-black/80" />
-          <DialogContent className="bg-background fixed inset-0 z-50 flex flex-col items-center justify-center p-0">
-            <DialogTitle className="sr-only">
-              {image.title || "Image"}
-            </DialogTitle>
-            <DialogDescription className="sr-only">
-              {image.title || "Image"}
-            </DialogDescription>
-
-            <div className="relative flex h-screen w-screen items-center justify-center">
-              <TransformWrapper
-                initialScale={1}
-                initialPositionX={0}
-                initialPositionY={0}
-              >
-                {({ zoomIn, zoomOut }) => (
-                  <>
-                    <TransformComponent>
-                      {/* You can swap this with your preferred image optization technique, like using  next/image */}
-                      <img
-                        src={image.url}
-                        alt={image.title || "Full size"}
-                        className={cn(
-                          "max-h-[90vh] max-w-[90vw] object-contain",
-                          classNameImage
-                        )}
-                      />
-                    </TransformComponent>
-                    {showImageControls && (
-                      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-                        <button
-                          onClick={() => zoomOut()}
-                          className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
-                          aria-label="Zoom out"
-                        >
-                          <MinusCircle className="size-6" />
-                        </button>
-                        <button
-                          onClick={() => zoomIn()}
-                          className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
-                          aria-label="Zoom in"
-                        >
-                          <PlusCircle className="size-6" />
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </TransformWrapper>
-              <DialogClose asChild>
-                <button
-                  className="absolute top-4 right-4 z-10 cursor-pointer rounded-full border bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
-                  aria-label="Close"
-                >
-                  <X className="size-6" />
-                </button>
-              </DialogClose>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
-    </div>
-  );
-};
-
-const Thumb: React.FC<ThumbPropType> = (props) => {
-  const { imgUrl, index, onClick, selected, title } = props;
-
-  return (
-    <div
-      className={cn(
-        "transition-opacity duration-200 ",
-        selected ? "opacity-100" : "opacity-50 hover:opacity-70",
-        // Horizontal layout (top/bottom)
-        "group-[.thumbs-horizontal]:min-w-0 group-[.thumbs-horizontal]:flex-[0_0_22%] group-[.thumbs-horizontal]:pl-3 sm:group-[.thumbs-horizontal]:flex-[0_0_15%]",
-        // Vertical layout (left/right)
-        "group-[.thumbs-vertical]:w-full group-[.thumbs-vertical]:pt-3"
-      )}
-    >
-      <button
-        onClick={onClick}
-        className="relative w-full cursor-pointer touch-manipulation appearance-none overflow-hidden rounded-md border-0 bg-transparent p-0"
-        type="button"
-      >
-        <div
-          className={cn(
-            "relative w-full overflow-hidden rounded-lg bg-gray-100",
-            getAspectRatioClass("square")
-          )}
-        >
-          <Image
-            src={imgUrl}
-            alt={title || `Thumbnail ${index + 1}`}
-            width={400}
-            height={600}
-            className={cn("h-full w-full object-cover")}
-          />
-        </div>
-      </button>
-    </div>
-  );
-};
-
-type CarouselImage = {
-  title?: string;
-  url: string;
-};
-
-type CarouselImages = CarouselImage[];
-interface ImageCarousel_BasicProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  images: CarouselImages;
-  opts?: EmblaOptionsType;
-  showCarouselControls?: boolean;
-  showImageControls?: boolean;
-  imageFit?: "cover" | "contain" | "fill";
-  aspectRatio?: "square" | "video" | "wide" | "auto";
-  thumbPosition?: "bottom" | "top" | "left" | "right";
-  showThumbs?: boolean;
-  // Controlled mode props
-  selectedIndex?: number;
-  onSlideChange?: (index: number) => void;
-  classNameImage?: string;
-  classNameThumbnail?: string;
-}
+// --------------------------------------------------------
+// MAIN COMPONENT
+// --------------------------------------------------------
 
 const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
   aspectRatio = "wide",
@@ -226,10 +112,10 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
   classNameImage,
   classNameThumbnail,
   imageFit = "contain",
-  images,
+  images = [],
+  product_files = [],
   onSlideChange,
   opts,
-  // Controlled mode props
   selectedIndex: controlledIndex,
   showCarouselControls = true,
   showImageControls = true,
@@ -239,11 +125,19 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
 }) => {
   const isControlled = controlledIndex !== undefined;
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    ...opts,
-    axis: "x",
-  });
+  // 1. HARMANLAMA VE SIRALAMA
+  // images ve product_files listelerini birleştirip display_order'a göre diziyoruz
+  const sortedMedia = useMemo(() => {
+    const combined = [
+      ...images,
+      ...(product_files || []).map((f) => ({ ...f, type: "model" as const })),
+    ];
+    return combined.sort(
+      (a, b) => (a.display_order ?? 99) - (b.display_order ?? 99)
+    );
+  }, [images, product_files]);
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ ...opts, axis: "x" });
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel(
     showThumbs
       ? {
@@ -255,109 +149,28 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
       : undefined
   );
 
-  const onThumbClick = useCallback(
-    (index: number) => {
-      if (!emblaApi || !showThumbs || !emblaThumbsApi) return;
-
-      if (isControlled && onSlideChange) {
-        onSlideChange(index);
-      } else {
-        emblaApi.scrollTo(index);
-        emblaThumbsApi.scrollTo(index);
-      }
-    },
-    [emblaApi, emblaThumbsApi, showThumbs, isControlled, onSlideChange]
-  );
-
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
   const [internalSelectedIndex, setInternalSelectedIndex] = useState(0);
-
-  // Use either controlled or internal state
   const currentIndex = isControlled ? controlledIndex : internalSelectedIndex;
-
-  const scrollPrev = useCallback(() => {
-    if (isControlled && onSlideChange) {
-      const prevIndex = Math.max(0, currentIndex - 1);
-      onSlideChange(prevIndex);
-    } else if (emblaApi) {
-      emblaApi.scrollPrev();
-    }
-  }, [emblaApi, isControlled, onSlideChange, currentIndex]);
-
-  const scrollNext = useCallback(() => {
-    if (isControlled && onSlideChange && images) {
-      const nextIndex = Math.min(images.length - 1, currentIndex + 1);
-      onSlideChange(nextIndex);
-    } else if (emblaApi) {
-      emblaApi.scrollNext();
-    }
-  }, [emblaApi, isControlled, onSlideChange, currentIndex, images]);
-
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        scrollPrev();
-      } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollNext();
-      }
-    },
-    [scrollPrev, scrollNext]
-  );
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
-
     const selectedSlideIndex = emblaApi.selectedScrollSnap();
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-
-    if (!isControlled) {
-      setInternalSelectedIndex(selectedSlideIndex);
-    } else if (onSlideChange && selectedSlideIndex !== controlledIndex) {
-      onSlideChange(selectedSlideIndex);
-    }
-
-    if (showThumbs && emblaThumbsApi) {
+    if (!isControlled) setInternalSelectedIndex(selectedSlideIndex);
+    if (onSlideChange) onSlideChange(selectedSlideIndex);
+    if (showThumbs && emblaThumbsApi)
       emblaThumbsApi.scrollTo(selectedSlideIndex);
-    }
-  }, [
-    emblaApi,
-    emblaThumbsApi,
-    showThumbs,
-    isControlled,
-    onSlideChange,
-    controlledIndex,
-  ]);
-
-  // Effect for controlled mode to update carousel position
-  useEffect(() => {
-    if (
-      isControlled &&
-      emblaApi &&
-      emblaApi.selectedScrollSnap() !== controlledIndex
-    ) {
-      emblaApi.scrollTo(controlledIndex);
-      if (showThumbs && emblaThumbsApi) {
-        emblaThumbsApi.scrollTo(controlledIndex);
-      }
-    }
-  }, [controlledIndex, emblaApi, emblaThumbsApi, isControlled, showThumbs]);
+  }, [emblaApi, emblaThumbsApi, showThumbs, isControlled, onSlideChange]);
 
   useEffect(() => {
     if (!emblaApi) return;
-
     onSelect();
-    emblaApi.on("reInit", onSelect);
     emblaApi.on("select", onSelect);
-
     return () => {
-      emblaApi.off("reInit", onSelect);
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  if (sortedMedia.length === 0) return null;
 
   return (
     <div
@@ -372,52 +185,22 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
         className
       )}
       role="region"
-      aria-roledescription="carousel"
-      onKeyDownCapture={handleKeyDown}
       {...props}
     >
-      {showThumbs && thumbPosition === "top" && (
-        <div className="mb-4">
-          <div className="overflow-hidden" ref={emblaThumbsRef}>
-            <div className="thumbs-horizontal group -ml-3 flex">
-              {images?.map((image, index) => (
-                <Thumb
-                  key={index}
-                  onClick={() => onThumbClick(index)}
-                  selected={index === currentIndex}
-                  index={index}
-                  imgUrl={image.url}
-                  title={image.title}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div
-        className={cn(
-          "relative",
-          showThumbs &&
-            (thumbPosition === "left" || thumbPosition === "right") &&
-            "flex-[1_1_75%]"
-        )}
-        aria-label="Image carousel controls"
-      >
+      {/* ANA SLIDER ALANI */}
+      <div className={cn("relative flex-1")}>
         <div ref={emblaRef} className="overflow-hidden rounded-lg">
-          <div className="-ml-4 flex">
-            {images?.map((image, index) => (
+          <div className="flex -ml-4">
+            {sortedMedia.map((item, index) => (
               <div
                 key={index}
                 className="min-w-0 shrink-0 grow-0 basis-full pl-4"
-                role="group"
-                aria-roledescription="slide"
               >
-                <ImageContainer
-                  image={image}
-                  alt={`Slide ${index + 1}`}
-                  fit={imageFit}
+                <MediaItem
+                  item={item}
+                  productFiles={product_files} // SAF STL LİSTESİ BURAYA AKTARILIYOR
                   aspectRatio={aspectRatio}
+                  fit={imageFit}
                   showImageControls={showImageControls}
                   classNameImage={classNameImage}
                   classNameThumbnail={classNameThumbnail}
@@ -427,76 +210,209 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
           </div>
         </div>
 
-        {showCarouselControls && (
+        {/* CAROUSEL KONTROLLERİ */}
+        {showCarouselControls && sortedMedia.length > 1 && (
           <>
             <Button
               variant="outline"
               size="icon"
-              className="bg-background/80 hover:bg-background dark:bg-background/80 dark:hover:bg-background absolute top-1/2 left-[2%] z-10 h-8 w-8 -translate-y-1/2 rounded-full backdrop-blur-xs disabled:opacity-50"
-              disabled={!canScrollPrev}
-              onClick={scrollPrev}
+              className="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-white/80 backdrop-blur-sm"
+              onClick={() => emblaApi?.scrollPrev()}
             >
               <ArrowLeft className="h-4 w-4" />
-              <span className="sr-only">Previous slide</span>
             </Button>
-
             <Button
               variant="outline"
               size="icon"
-              className="bg-background/80 hover:bg-background dark:bg-background/80 dark:hover:bg-background absolute top-1/2 right-[2%] z-10 h-8 w-8 -translate-y-1/2 rounded-full backdrop-blur-xs disabled:opacity-50"
-              disabled={!canScrollNext}
-              onClick={scrollNext}
+              className="absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-white/80 backdrop-blur-sm"
+              onClick={() => emblaApi?.scrollNext()}
             >
               <ArrowRight className="h-4 w-4" />
-              <span className="sr-only">Next slide</span>
             </Button>
           </>
         )}
       </div>
 
-      {showThumbs &&
-        (thumbPosition === "bottom" ||
-          thumbPosition === "left" ||
-          thumbPosition === "right") && (
+      {/* THUMBNAILS (KÜÇÜK RESİMLER) */}
+      {showThumbs && sortedMedia.length > 1 && (
+        <div
+          className={cn(
+            thumbPosition === "bottom" ? "mt-4" : "w-20",
+            "overflow-hidden"
+          )}
+          ref={emblaThumbsRef}
+        >
           <div
             className={cn(
+              "flex gap-2",
               thumbPosition === "left" || thumbPosition === "right"
-                ? "relative flex-[0_0_20%]"
-                : "mt-4"
+                ? "flex-col"
+                : "flex-row"
             )}
           >
-            <div
-              className={cn(
-                "overflow-hidden",
-                (thumbPosition === "left" || thumbPosition === "right") &&
-                  "absolute inset-0"
-              )}
-              ref={emblaThumbsRef}
-            >
-              <div
+            {sortedMedia.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => emblaApi?.scrollTo(index)}
                 className={cn(
-                  thumbPosition === "bottom"
-                    ? "thumbs-horizontal group -ml-3 flex"
-                    : "thumbs-vertical group -mt-3 flex h-full flex-col"
+                  "relative aspect-square w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all",
+                  currentIndex === index
+                    ? "border-purple-600 opacity-100"
+                    : "border-transparent opacity-50"
                 )}
               >
-                {images?.map((image, index) => (
-                  <Thumb
-                    key={index}
-                    onClick={() => onThumbClick(index)}
-                    selected={index === currentIndex}
-                    index={index}
-                    imgUrl={image.url}
-                    title={image.title}
+                {getMediaType(item.url, item.type) === "model" ? (
+                  <div className="flex h-full w-full items-center justify-center bg-neutral-100">
+                    <Box className="h-6 w-6 text-purple-600" />
+                  </div>
+                ) : (
+                  <img
+                    src={item.url}
+                    className="h-full w-full object-cover"
+                    alt=""
                   />
-                ))}
-              </div>
-            </div>
+                )}
+              </button>
+            ))}
           </div>
-        )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --------------------------------------------------------
+// MEDIA ITEM (Dialog ve Lightbox Yönetimi)
+// --------------------------------------------------------
+
+const MediaItem = ({
+  item,
+  productFiles,
+  aspectRatio,
+  fit,
+  showImageControls,
+  classNameImage,
+  classNameThumbnail,
+}: any) => {
+  const mediaType = getMediaType(item.url, item.type);
+  const isVideo = mediaType === "video";
+  const isModel = mediaType === "model";
+
+  return (
+    <div
+      className={cn(
+        "relative w-full overflow-hidden rounded-lg bg-gray-100 shadow-sm",
+        getAspectRatioClass(aspectRatio)
+      )}
+    >
+      <Dialog>
+        <DialogTrigger asChild>
+          <div className="group relative h-full w-full cursor-pointer overflow-hidden">
+            {isModel ? (
+              <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-50 group-hover:bg-neutral-100 transition-colors">
+                <div className="rounded-full bg-purple-100 p-4 transition-transform group-hover:scale-110">
+                  <Box className="h-10 w-10 text-purple-700" />
+                </div>
+                <span className="mt-3 text-[10px] font-bold tracking-widest text-purple-900 uppercase">
+                  3D Görüntüle
+                </span>
+              </div>
+            ) : isVideo ? (
+              <div className="relative h-full w-full">
+                <video
+                  src={item.url}
+                  className="h-full w-full object-cover"
+                  muted
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+                  <Play className="h-12 w-12 text-white fill-white/20" />
+                </div>
+              </div>
+            ) : (
+              <BlurImage
+                fill
+                alt={"item?.name"}
+                src={item.url}
+                imageClassName={cn(
+                  "h-full w-full",
+                  fit === "contain" ? "object-contain" : "object-cover",
+                  classNameThumbnail
+                )}
+              />
+            )}
+          </div>
+        </DialogTrigger>
+
+        <DialogPortal>
+          <DialogOverlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md" />
+          <DialogContent className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-transparent p-0 outline-none border-none">
+            <DialogTitle className="sr-only">
+              {item.title || "Medya"}
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              Tam Ekran Görünümü
+            </DialogDescription>
+
+            <div className="relative flex h-screen w-screen items-center justify-center">
+              {isModel ? (
+                // --- STL VIEWER ---
+                // Burada product_files listesini (all STL files) ve başlangıç URL'ini gönderiyoruz
+                <div className="relative w-[95vw] h-[85vh] md:w-[90vw] md:h-[90vh] bg-neutral-900 rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
+                  <STLViewer urls={productFiles} />
+                </div>
+              ) : isVideo ? (
+                <video
+                  src={item.url}
+                  controls
+                  autoPlay
+                  className="max-h-[90vh] max-w-[90vw]"
+                />
+              ) : (
+                <TransformWrapper initialScale={1}>
+                  {({ zoomIn, zoomOut }) => (
+                    <>
+                      <TransformComponent wrapperClass="w-full h-full flex items-center justify-center">
+                        <img
+                          src={item.url}
+                          className={cn(
+                            "max-h-[90vh] max-w-[90vw] object-contain shadow-2xl",
+                            classNameImage
+                          )}
+                          alt=""
+                        />
+                      </TransformComponent>
+                      {showImageControls && (
+                        <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-4 bg-black/50 backdrop-blur-md p-2 rounded-full z-50">
+                          <button
+                            onClick={() => zoomOut()}
+                            className="p-2 text-white hover:text-purple-400 transition-colors"
+                          >
+                            <MinusCircle className="h-6 w-6" />
+                          </button>
+                          <button
+                            onClick={() => zoomIn()}
+                            className="p-2 text-white hover:text-purple-400 transition-colors"
+                          >
+                            <PlusCircle className="h-6 w-6" />
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </TransformWrapper>
+              )}
+
+              <DialogClose asChild>
+                <button className="absolute top-6 right-6 z-50 text-white/50 hover:text-white transition-colors bg-white/10 p-2 rounded-full backdrop-blur-sm">
+                  <X className="h-8 w-8" />
+                </button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </DialogPortal>
+      </Dialog>
     </div>
   );
 };
 
 export default ImageCarousel_Basic;
-export type { CarouselImage, CarouselImages };

@@ -23,3 +23,12 @@ export function useProductDetail(slug: string) {
     enabled: !!slug,
   });
 }
+
+export function useProductFiles(slug: string) {
+  return useQuery({
+    queryKey: ["products", "files", slug],
+    queryFn: () => productService.getProductFilesBySlug(slug),
+    enabled: !!slug, // slug yoksa boşuna istek atma
+    staleTime: 1000 * 60 * 60, // Dosya listesi nadir değiştiği için 1 saat cache'de tutulabilir
+  });
+}
