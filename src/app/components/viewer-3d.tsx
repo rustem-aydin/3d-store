@@ -9,7 +9,7 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 type ViewMode = "solid" | "wireframe" | "xray";
 
 interface STLViewerProps {
-  file_url: string; // Dosya adı (örn: "model.stl")
+  file_url: string;
 }
 
 export default function STLViewer({ file_url }: STLViewerProps) {
