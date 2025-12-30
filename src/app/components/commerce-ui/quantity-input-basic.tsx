@@ -80,7 +80,7 @@ const QuantityInputBasic = ({
     >
       <button
         className={cn(
-          "hover:bg-muted-foreground/10 flex cursor-pointer items-center justify-center rounded-s-lg border px-3 py-1 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
+          "hover:bg-muted-foreground/10 flex cursor-pointer border-purple-500/20 items-center justify-center rounded-s-lg border px-3 py-1 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
           disabled && "pointer-events-none"
         )}
         onClick={handleDecrease}
@@ -94,7 +94,7 @@ const QuantityInputBasic = ({
         value={inputValue}
         onChange={handleInputChange}
         onBlur={handleBlur}
-        className="w-12 border-y px-2 py-1 text-center font-mono outline-none"
+        className="w-12 border-y border-purple-500/20 px-2 py-1 text-center font-mono outline-none"
         min={min}
         max={max !== null ? max : undefined}
         disabled={disabled}
@@ -102,7 +102,7 @@ const QuantityInputBasic = ({
       />
       <button
         className={cn(
-          "hover:bg-muted-foreground/10 flex cursor-pointer items-center justify-center rounded-e-lg border px-3 py-1 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
+          "hover:bg-muted-foreground/10 flex cursor-pointer border-purple-500/20 items-center justify-center rounded-e-lg border px-3 py-1 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
           disabled && "pointer-events-none"
         )}
         onClick={handleIncrease}

@@ -21,39 +21,24 @@ export async function getPreviewUrl(input: FileInput): Promise<string | null> {
 
     const supabase = await createClient();
 
-    // file_url aslında dosya adı (örn: "gingerbread.stl")
-    const fileName = input.file_url;
+    // Direkt dosya adı (klasör yok)
+    const fileName = input.file_url; // "gingerbread.stl"
 
-    console.log("Bucket:", BUCKET_NAME);
-    console.log("Dosya adı:", fileName);
+    console.log("🔍 Aranan dosya:", fileName);
 
-    // Önce dosyanın varlığını kontrol et
-    const { data: fileList, error: listError } = await supabase.storage
-      .from(BUCKET_NAME)
-      .list("", {
-        search: fileName,
-      });
-
-    if (listError) {
-      console.error("Dosya arama hatası:", listError);
-      return null;
-    }
-
-    if (!fileList || fileList.length === 0) {
-      console.error(`Dosya bulunamadı: ${fileName}`);
-      console.log("Bucket'taki dosyaları listeleyin ve kontrol edin");
-      return null;
-    }
-
-    console.log("Dosya bulundu:", fileList[0]);
-
-    // İmzalı URL oluştur (10 dakika geçerli)
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME)
       .createSignedUrl(fileName, 600);
-
+    console.log(error);
     if (error) {
-      console.error("Supabase Storage İmzalı URL Hatası:", error);
+      console.error("❌ Supabase Storage Hatası:", error);
+
+      // 🔍 Bucket içeriğini kontrol et
+      const { data: files } = await supabase.storage
+        .from(BUCKET_NAME)
+        .list("", { limit: 10 });
+      console.log("📂 Bucket'taki dosyalar:", files);
+
       return null;
     }
 
@@ -62,10 +47,10 @@ export async function getPreviewUrl(input: FileInput): Promise<string | null> {
       return null;
     }
 
-    console.log("✅ İmzalı URL başarıyla oluşturuldu");
+    console.log("✅ Signed URL:", data.signedUrl);
     return data.signedUrl;
   } catch (err) {
-    console.error("Kritik Server Action Hatası:", err);
+    console.error("Kritik hata:", err);
     return null;
   }
 }

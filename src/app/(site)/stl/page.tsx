@@ -1,5 +1,7 @@
+import STLViewer from "@/app/components/viewer-3d";
+
 const Page = () => {
-  return <div />;
+  return <STLViewer />;
 };
 
 export default Page;

@@ -18,6 +18,7 @@ export default function ModelDetailsContainer({ slug }: { slug: string }) {
   return (
     <div className="container mx-auto py-24 p-4">
       <ModelDetails
+        product_files={product.product_files}
         title={product.title}
         description={product.description}
         price={product.price}
@@ -31,12 +32,6 @@ export default function ModelDetailsContainer({ slug }: { slug: string }) {
         images={product.product_images?.map((img: any) => ({
           url: img.image_url,
           title: product.title,
-        }))}
-        product_files={product?.product_files?.map((file: any) => ({
-          url: file.file_url,
-          title: file.title || "3D Model",
-          display_order: file.display_order,
-          type: "model", // Bunun bir model olduğunu belirtiyoruz
         }))}
         onAddToCart={(payload) => {
           addItem({

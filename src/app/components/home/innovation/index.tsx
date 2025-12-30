@@ -5,7 +5,6 @@ import React, { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { useCollections } from "@/lib/supabase/hooks/useCollections";
 import { TextGenerateEffect } from "../../ui/text-generate-effect";
-import DynamicIcon from "../../dynamic-icon";
 
 function Innovation({ limit }: { limit?: number }) {
   const { data: categories, isLoading, error } = useCollections(limit);

@@ -3,7 +3,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image from "next/image";
 import { BlurImage } from "../images/blur-image";
 
 export function ModelCard({
@@ -14,6 +13,7 @@ export function ModelCard({
   category,
   price,
   formats,
+
   isPremium,
   ...props
 }: any) {
@@ -42,19 +42,13 @@ export function ModelCard({
       <Link href={`/models/${slug_text}`}>
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 z-0">
-            <img
-              src={imageUrl}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
           </div>
           <BlurImage
+            imageClassName="object-cover object-center"
             src={imageUrl}
             alt={title}
             fill
-            sizes="(max-width: 768px) 50vw, 25vw" // Performans için gerekli
-            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
         </div>
