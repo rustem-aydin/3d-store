@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react"; // useState kullanılmıyorsa silebilirsiniz
 import { motion, useInView } from "motion/react";
 import { useCollections } from "@/lib/supabase/hooks/useCollections";
 import { TextGenerateEffect } from "../../ui/text-generate-effect";
@@ -9,23 +9,19 @@ import { TextGenerateEffect } from "../../ui/text-generate-effect";
 function Innovation({ limit }: { limit?: number }) {
   const { data: categories, isLoading, error } = useCollections(limit);
   const ref = useRef(null);
-  const inView = useInView(ref);
+  // once: true eklendi, böylece her scroll'da tekrar animasyon yapıp performans yemesin
+  const inView = useInView(ref, { once: true });
 
   return (
-    <section id="services">
+    // EKLENDİ: overflow-hidden taşmaları gizleyerek kaymayı engeller
+    <section id="services" className="overflow-hidden">
       <div ref={ref} className="2xl:py-20 py-11">
         <div className="flex flex-col gap-10 md:gap-20">
-          <div
-            className="relative flex flex-col mb-8
-        16 text-center items-center"
-          >
-            <h2 className="font-medium w-full max-w-32">
+          <div className="relative flex flex-col mb-8 16 text-center items-center">
+            <h2>
+              <TextGenerateEffect words="Popüler" duration={0.5} />
               <TextGenerateEffect
-                words="Sizden haber almayı çok isteriz,"
-                duration={0.5}
-              />
-              <TextGenerateEffect
-                words="İletişime Geçin"
+                words="Kategorileri Keşfet"
                 delay={1.5}
                 className="italic font-normal instrument-font"
               />
@@ -35,7 +31,8 @@ function Innovation({ limit }: { limit?: number }) {
         <div className="container">
           <div className="flex flex-col gap-12">
             <div className="flex flex-col justify-center items-center gap-10 lg:gap-16">
-              <div ref={ref} className="w-full">
+              {/* DÜZELTME: Buradaki gereksiz 'ref={ref}' kaldırıldı */}
+              <div className="w-full">
                 <div className="grid auto-rows-max grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-6 w-full">
                   {categories?.map((items: any, index: any) => {
                     return (
@@ -46,7 +43,9 @@ function Innovation({ limit }: { limit?: number }) {
                         }}
                         className={`${items.color} flex flex-col p-8 rounded-2xl gap-6 lg:gap-9`}
                         initial={{
-                          scale: 1.2,
+                          // DÜZELTME: 1.2 yerine 0.9 yapıldı.
+                          // Mobilde eleman ekran dışına taşmaz, içten dışa büyür.
+                          scale: 0.9,
                           opacity: 0,
                           filter: "blur(8px)",
                         }}
@@ -57,7 +56,7 @@ function Innovation({ limit }: { limit?: number }) {
                         }
                         transition={{
                           duration: 0.6,
-                          delay: 0.3 + index * 0.2,
+                          delay: 0.1 + index * 0.1, // Delay biraz optimize edildi
                           ease: "easeInOut",
                         }}
                       >
@@ -94,6 +93,8 @@ function Innovation({ limit }: { limit?: number }) {
                 </div>
               </div>
             </div>
+
+            {/* Alt Banner Kısmı */}
             <div className="flex flex-col gap-4 xl:flex xl:flex-row bg-dark_black items-center justify-between dark:bg-white/5 py-8 px-7 sm:px-12 rounded-3xl w-full">
               <h4 className="text-white text-center xl:text-left">
                 Modellerimizi Keşfedin.

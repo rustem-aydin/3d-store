@@ -223,7 +223,7 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
                 key={index}
                 onClick={() => emblaApi?.scrollTo(index)}
                 className={cn(
-                  "relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all bg-gray-100 dark:bg-gray-800",
+                  "relative aspect-auto w-30 h-24 shrink-0 overflow-hidden rounded-lg border-2 transition-all bg-gray-100 dark:bg-gray-800",
                   currentIndex === index
                     ? "border-purple-600 ring-2 ring-purple-600/20 opacity-100"
                     : "border-transparent opacity-60 hover:opacity-100"
@@ -231,12 +231,17 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
               >
                 {isVideoFile(item.url, item.type) ? (
                   <div className="flex h-full w-full items-center justify-center bg-gray-200">
-                    <Play className="h-6 w-6 text-gray-500" />
+                    <Play className="h-8 w-8 text-gray-500" />
                   </div>
                 ) : (
-                  <img
+                  <BlurImage
+                    fill
                     src={item.url}
-                    className="h-full w-full object-cover"
+                    // DÜZELTME BURADA:
+                    // 1. className yerine 'imageClassName' kullan (Bileşen yapına göre)
+                    // 2. 'object-cover' kullan: Bu, resmi bozmadan (oranını koruyarak) kutuyu doldurur.
+                    //    (Dikey resimlerde alt ve üstten, yataylarda yanlardan kırparak tam doldurur).
+                    imageClassName="h-full w-full object-cover"
                     alt={item.title || "thumbnail"}
                   />
                 )}
@@ -263,7 +268,7 @@ const MediaItem = ({ item, aspectRatio, fit, classNameImage }: any) => {
     >
       <Dialog>
         <DialogTrigger asChild>
-          <div className="group relative h-full w-full cursor-pointer flex items-center justify-center">
+          <div className="group relative h-full w-full cursor-pointer flex items-center justify-center overflow-hidden bg-black/5">
             {isVideo ? (
               <div className="relative h-full w-full bg-black">
                 <video
@@ -272,25 +277,37 @@ const MediaItem = ({ item, aspectRatio, fit, classNameImage }: any) => {
                   muted
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
-                  <Play className="h-12 w-12 text-white fill-white/20" />
+                  <Play className="h-24 w-24 text-white fill-white/20" />
                 </div>
               </div>
             ) : (
-              <BlurImage
-                fill
-                src={item?.url}
-                alt={item.title || "Product image"}
-                imageClassName={cn(
-                  "transition-transform duration-500 group-hover:scale-105", // Zoom efekti
-                  fit === "contain" ? "object-contain" : "object-cover",
-                  classNameImage
-                )}
-              />
+              <>
+                <div className="absolute inset-0 z-0">
+                  <BlurImage
+                    fill
+                    src={item?.url}
+                    alt=""
+                    imageClassName="object-cover w-full h-full blur-xl scale-110 opacity-60 brightness-[0.7]"
+                  />
+                </div>
+
+                <BlurImage
+                  fill
+                  src={item?.url}
+                  alt={item.title || "Product image"}
+                  imageClassName={cn(
+                    "transition-transform duration-500 group-hover:scale-105 z-10 relative",
+                    // fit prop'u genelde 'contain' olmalı ki arkadaki blur gözüksün.
+                    fit === "contain" ? "object-contain" : "object-cover",
+                    classNameImage
+                  )}
+                />
+              </>
             )}
           </div>
         </DialogTrigger>
 
-        {/* POPUP (MODAL) */}
+        {/* POPUP (MODAL) KISMI AYNEN KALDI */}
         <DialogPortal>
           <DialogOverlay className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm animate-in fade-in" />
           <DialogContent className="fixed inset-0 z-[60] flex items-center justify-center p-0 border-none outline-none bg-transparent max-w-none w-screen h-screen">
@@ -328,5 +345,4 @@ const MediaItem = ({ item, aspectRatio, fit, classNameImage }: any) => {
     </div>
   );
 };
-
 export default ImageCarousel_Basic;

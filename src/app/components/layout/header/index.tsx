@@ -9,9 +9,12 @@ import HeaderLink from "./Navigation/HeaderLink";
 import Logo from "./Logo";
 import MobileHeader from "./Navigation/MobileHeader";
 import ThemeToggler from "./ThemeToggle";
-import { headerData } from "@/lib/data";
 import CartComponent from "../../cart-icon";
 
+export const headerData = [
+  { label: "Tüm Modeller", href: "/models" },
+  { label: "Koleksiyonlar", href: "/collections" },
+];
 const Header = () => {
   const { data: session } = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
