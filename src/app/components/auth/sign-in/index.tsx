@@ -256,7 +256,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="mt-20 grid lg:grid-cols-2">
       {/* SOL: Sadece Animasyon (Logo ve Footer kaldırıldı) */}
       <div className="relative hidden lg:flex flex-col items-center justify-center  overflow-hidden">
         {/* ANIMASYON ALANI */}
@@ -582,13 +582,13 @@ export default function LoginPage() {
             <h1 className="text-3xl font-bold tracking-tight mb-2">
               Giriş Yapınız
             </h1>
-            <p className="text-zinc-500 text-sm">Please enter your details</p>
+            <p className="text-zinc-500 text-sm">Lütfen Formu Doldurunuz</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                Email
+                E-posta
               </label>
               <input
                 id="email"
@@ -605,7 +605,7 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                Password
+                Şifre
               </label>
               <div className="relative">
                 <input
