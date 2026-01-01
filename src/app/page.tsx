@@ -33,8 +33,8 @@ export default async function Home() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Models limit={10} />
       </HydrationBoundary>
-      {/* <WebResult />
       <Innovation />
+      {/* <WebResult />
       <OnlinePresence />
       <CreativeMind />
       <CustomerStories />

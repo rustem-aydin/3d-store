@@ -47,7 +47,7 @@ function HeroSection() {
       <div className="absolute inset-0 -z-10 before:absolute before:inset-0 before:bg-linear-to-r before:from-blue_gradient/10 before:via-white/5 before:to-yellow_gradient/10 before:blur-3xl dark:before:from-dark_blue_gradient/20 dark:before:via-black dark:before:to-dark_yellow_gradient/20" />
 
       {/* SPLINE */}
-      <div className="absolute top-0 right-0 w-full lg:w-[65%] h-full z-10 pointer-events-auto transform lg:translate-x-[5%] xl:translate-x-[8%] transition-transform duration-700">
+      <div className="absolute top-0 right-0 items-end w-full lg:w-[90%] h-full z-10 pointer-events-auto transform lg:translate-x-[5%] xl:translate-x-[8%] transition-transform duration-700">
         <SplineScene
           scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
           className="w-full h-full"

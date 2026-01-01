@@ -25,40 +25,16 @@ const formatFileSize = (size: string | number) => {
 
 type Drawer3DProps = {
   product_files: any[];
+  children: React.ReactNode;
 };
 
-const Drawer3D = ({ product_files }: Drawer3DProps) => {
+const Drawer3D = ({ product_files, children }: Drawer3DProps) => {
   return (
     <Drawer>
-      <DrawerTrigger asChild>
-        <Button
-          className={cn(
-            "relative w-full h-14 px-4 overflow-hidden",
-            "bg-zinc-900 dark:bg-zinc-100",
-            "transition-all duration-200",
-            "group"
-          )}
-        >
-          <div
-            className={cn(
-              "absolute inset-0",
-              "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500",
-              "opacity-40 group-hover:opacity-80",
-              "blur transition-opacity duration-500"
-            )}
-          />
-
-          <div className="relative flex items-center justify-center gap-2">
-            <span className="text-white dark:text-zinc-900 font-medium">
-              3D Görüntüle
-            </span>
-            <ArrowUpRight className="w-4 h-4 text-white/90 dark:text-zinc-900/90" />
-          </div>
-        </Button>
-      </DrawerTrigger>
+      <DrawerTrigger asChild>{children}</DrawerTrigger>
 
       {/* max-h-[85vh] ile yüksekliği sınırlıyoruz ki scroll oluşsun */}
-      <DrawerContent className="bg-white dark:bg-gray-950 border-t dark:border-gray-800 max-h-[85vh] h-[85vh]">
+      <DrawerContent className="bg-white dark:bg-dark_black border-t dark:border-dark_black max-h-[85vh] h-[85vh]">
         {/* Ana Kapsayıcı: Flex Column ve h-full önemli */}
         <div className="mx-auto w-full max-w-2xl flex flex-col h-full">
           {/* HEADER: Sabit kalacak kısım */}
@@ -95,8 +71,8 @@ const Drawer3D = ({ product_files }: Drawer3DProps) => {
                     <Button
                       className={cn(
                         "w-full h-auto p-3 flex items-center justify-between",
-                        "bg-white dark:bg-gray-900",
-                        "border border-gray-200 dark:border-gray-800",
+                        "bg-white dark:bg-dark_black",
+                        "border border-gray-200 dark:border-purple-500",
                         "hover:border-purple-500/50 hover:bg-gray-50 dark:hover:bg-gray-800/50",
                         "transition-all duration-200 group text-left shadow-sm",
                         "animate-in fade-in slide-in-from-bottom-2 duration-300" // Giriş animasyonu

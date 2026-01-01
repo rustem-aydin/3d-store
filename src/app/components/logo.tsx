@@ -9,7 +9,7 @@ export default function GlobeLogoWithText() {
   useEffect(() => {
     if (!mountRef.current) return;
 
-    const size = 50;
+    const size = 40;
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
@@ -23,7 +23,6 @@ export default function GlobeLogoWithText() {
     renderer.setPixelRatio(window.devicePixelRatio);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Çizgisel Küre
     const wireframeGeometry = new THREE.SphereGeometry(5, 18, 18);
     const wireframeMaterial = new THREE.MeshBasicMaterial({
       color: 0x3a86ff,
@@ -44,7 +43,6 @@ export default function GlobeLogoWithText() {
     const innerGlobe = new THREE.Mesh(innerGeometry, innerMaterial);
     scene.add(innerGlobe);
 
-    // Atmosferik Parlama
     const atmosphereVertexShader = `
       varying vec3 vNormal;
       void main() {

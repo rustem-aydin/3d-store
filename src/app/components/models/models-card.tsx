@@ -34,7 +34,7 @@ export function ModelCard({
       onMouseLeave={handleMouseLeave}
       style={style}
       className={cn(
-        "group relative w-full aspect-4/5 rounded-lg overflow-hidden bg-neutral-900 shadow-2xl cursor-pointer",
+        "group relative w-full aspect-5/4 rounded-lg overflow-hidden bg-neutral-900 shadow-2xl cursor-pointer",
         className
       )}
       {...props}
@@ -54,52 +54,30 @@ export function ModelCard({
         </div>
 
         <div
-          className="absolute top-4 left-4 right-4 flex justify-between items-start z-10"
+          className="absolute top-1 left-1 md:top-2 md:left-2 xl:top-4 xl:left-4 md:right-4 flex justify-between items-start z-10"
           style={{ transform: "translateZ(30px)" }}
         >
-          <span className="px-1  md:px-3 py-0.5 md:py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[8px] md:text-[10px] font-bold tracking-widest uppercase text-white">
+          <span className="px-1  md:px-3 py-0.5 md:py-1 bg-purple-500/30 backdrop-blur-md border border-white/20 rounded-full text-[7px] md:text-[10px] font-bold tracking-widest uppercase text-white">
             {category}
           </span>
-          {isPremium && (
-            <div className="bg-yellow-500 text-black p-1.5 rounded-lg shadow-lg">
-              <svg
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
-            </div>
-          )}
         </div>
 
         <div
-          className="absolute bottom-0 left-0 right-0 p-2 z-10 space-y-3"
+          className="absolute backdrop-blur-xs bottom-0  left-0 right-0 p-[6px] md:p-2 z-10 "
           style={{ transform: "translateZ(50px)" }}
         >
           <div>
             <h3 className="text-[10px] md:text-xl font-bold text-white leading-tight">
               {title}
             </h3>
-            <div className="flex gap-1.5 mt-1 md:mt-2">
-              {formats.map((f: any) => (
-                <span
-                  key={f}
-                  className="text-[7px] md:text-[9px] px-0.5 md:px-1.5 py-0.5 mb-0.5 md:mb-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded"
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-white/10">
+          <div className="flex items-center justify-between pt-1 md:pt-2 border-t border-white/10">
             <div className="flex flex-col">
-              <span className="text-[8px] md:text-[10px]  text-white/50 uppercase">
+              <span className="text-[7px] md:text-[10px]  text-white/50 uppercase">
                 Fiyat
               </span>
-              <span className="text-sm md:text-lg font-bold text-white">
+              <span className="text-[10px] md:text-lg font-bold text-white">
                 {price}
               </span>
             </div>

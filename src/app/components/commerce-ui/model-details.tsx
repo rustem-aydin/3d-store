@@ -81,8 +81,8 @@ function ModelDetails({
   }
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col p-4">
-      <div className="relative flex flex-col overflow-hidden rounded-2xl border border-purple-500/20 bg-white dark:bg-neutral-950 shadow-xl transition-all duration-300">
+    <div className="max-w-7xl  flex flex-col p-4">
+      <div className="relative flex flex-col overflow-hidden rounded-2xl border border-purple-500/20 shadow-xl transition-all duration-300">
         <div className="flex flex-col lg:flex-row items-stretch">
           {/* Sol Kolon: Slider */}
           <div className="relative flex w-full flex-col lg:w-1/2 p-6 bg-neutral-50/50 dark:bg-neutral-900/20">
@@ -128,9 +128,6 @@ function ModelDetails({
                     {title}
                   </h1>
                   <div className="shrink-0 text-right">
-                    <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">
-                      Fiziksel Sipariş
-                    </span>
                     <PriceFormat
                       value={price}
                       className="text-3xl font-black text-purple-800 dark:text-purple-400"
@@ -171,7 +168,7 @@ function ModelDetails({
                     {author}
                   </p>
                   <div className="flex items-center gap-1 text-[10px] text-purple-600 dark:text-purple-400 font-bold uppercase">
-                    <Box size={10} /> Pro Verified Designer
+                    <Box size={10} /> Profesyonel Designer
                   </div>
                 </div>
               </div>
@@ -182,11 +179,6 @@ function ModelDetails({
                 </p>
               </div>
 
-              <div className="mb-8">
-                <Drawer3D product_files={product_files} />
-              </div>
-
-              {/* Fiyat ve Adet Seçimi */}
               <div className="mb-8 p-5 rounded-2xl border border-purple-500/20 bg-neutral-50 dark:bg-neutral-900/40">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
@@ -226,36 +218,26 @@ function ModelDetails({
                 >
                   <ShoppingCart className="mr-2 h-5 w-5" /> Sepete Ekle
                 </Button>
-
-                <Button
-                  size="lg"
-                  className="flex-1 h-14 bg-purple-800 text-white hover:bg-purple-900 shadow-lg shadow-purple-900/20 transition-all active:scale-95 flex flex-col items-center justify-center gap-0"
-                  onClick={() =>
-                    onBuyNow({ productPrice: price, quantity, totalPrice })
-                  }
-                >
-                  <div className="flex items-center font-black">
-                    <DownloadIcon className="mr-2 h-5 w-5" /> Modeli İndir
-                  </div>
-                  <div className="text-[10px] opacity-80 font-medium">
-                    Dijital Dosya Lisansı:{" "}
-                    <PriceFormat
-                      value={price_digital}
-                      className="inline ml-1"
-                    />
-                  </div>
-                </Button>
-              </div>
-
-              <div className="flex items-center justify-center gap-4 py-2">
-                <p className="flex items-center text-[10px] text-gray-400 font-medium">
-                  <ShieldCheck className="mr-1.5 h-3.5 w-3.5 text-green-500" />{" "}
-                  {warranty} Güvenli Lisans
-                </p>
-                <div className="h-1 w-1 rounded-full bg-gray-300" />
-                <p className="text-[10px] text-gray-400 font-medium lowercase">
-                  Anında Teslimat
-                </p>
+                <Drawer3D product_files={product_files}>
+                  <Button
+                    size="lg"
+                    className="flex-1 h-14 bg-purple-800 text-white hover:bg-purple-900 shadow-lg shadow-purple-900/20 transition-all active:scale-95 flex flex-col items-center justify-center gap-0"
+                    onClick={() =>
+                      onBuyNow({ productPrice: price, quantity, totalPrice })
+                    }
+                  >
+                    <div className="flex items-center font-black">
+                      <DownloadIcon className="mr-2 h-5 w-5" /> Modeli İndir
+                    </div>
+                    <div className="text-[10px] opacity-80 font-medium">
+                      Dijital Dosya Lisansı:{" "}
+                      <PriceFormat
+                        value={price_digital}
+                        className="inline ml-1"
+                      />
+                    </div>
+                  </Button>
+                </Drawer3D>
               </div>
             </div>
           </div>

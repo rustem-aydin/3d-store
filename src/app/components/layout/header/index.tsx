@@ -111,13 +111,13 @@ const Header = () => {
                     href={"/signin"}
                     className="hidden lg:block bg-transparent border border-dark_black dark:border-white/50 text-primary px-2.5 xl:px-4 py-2 rounded-full hover:bg-dark_black hover:text-white"
                   >
-                    Sign In
+                    Giriş Yap
                   </Link>
                   <Link
                     href={"/signup"}
                     className="hidden lg:block text-white px-2.5 xl:px-4 py-2  bg-dark_black dark:bg-white/20 rounded-full hover:opacity-90"
                   >
-                    Sign Up
+                    Kayıt
                   </Link>
                 </div>
               )}

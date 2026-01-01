@@ -8,7 +8,7 @@ export default function ModelList({ limit }: { limit: number }) {
   return (
     <section>
       <div className="px-4 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-20">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 mb-20">
           {products?.map((model: any) => {
             const orderedImage = model.product_images?.find(
               (img: any) => img.display_order === 1

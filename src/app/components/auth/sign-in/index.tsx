@@ -256,7 +256,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mt-20 grid lg:grid-cols-2">
+    <div className="mt-20 grid  lg:grid-cols-2">
       {/* SOL: Sadece Animasyon (Logo ve Footer kaldırıldı) */}
       <div className="relative hidden lg:flex flex-col items-center justify-center  overflow-hidden">
         {/* ANIMASYON ALANI */}
@@ -576,7 +576,7 @@ export default function LoginPage() {
       </div>
 
       {/* SAĞ: Login Formu (Logo ve Footer yok) */}
-      <div className="flex items-center justify-center p-8 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+      <div className="flex items-center justify-center p-8  text-zinc-900 dark:text-zinc-100">
         <div className="w-full max-w-[420px]">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
@@ -633,28 +633,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="rounded border-zinc-200 text-[#a855f7] focus:ring-[#a855f7]"
-                />
-                <label
-                  htmlFor="remember"
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  Remember for 30 days
-                </label>
-              </div>
-              <a
-                href="#"
-                className="text-sm text-purple-500 hover:underline font-medium"
-              >
-                Forgot password?
-              </a>
-            </div>
-
             <button
               type="submit"
               disabled={loading}
@@ -668,17 +646,17 @@ export default function LoginPage() {
           <div className="mt-6">
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 border border-zinc-200 bg-transparent shadow-sm hover:bg-zinc-100 h-12 w-full"
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 cursor-pointer disabled:pointer-events-none disabled:opacity-50 border border-zinc-200 bg-transparent shadow-sm hover:border-purple-500 h-12 w-full"
             >
-              <Mail className="mr-2 size-5" />
-              Log in with Google
+              <Mail className="mr-2 hover:border-purple-500  size-5" />
+              Google ile Giriş Yap
             </button>
           </div>
 
           <div className="text-center text-sm text-zinc-500 mt-8">
-            Don't have an account?{" "}
-            <a href="#" className="text-zinc-900 font-medium hover:underline">
-              Sign Up
+            Hesabınız Yok Mu?{" "}
+            <a href="#" className=" font-medium hover:underline">
+              Kayıt Ol
             </a>
           </div>
         </div>
