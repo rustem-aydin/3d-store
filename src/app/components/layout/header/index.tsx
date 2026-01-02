@@ -64,15 +64,19 @@ const Header = () => {
       <header className={`fixed top-0 z-50 w-full`}>
         <div className="container p-3">
           <nav
-            className={`flex items-center py-3 px-4 justify-between ${
+            className={`flex items-center py-0 px-2 justify-between ${
               sticky
                 ? " rounded-full shadow-sm bg-white dark:bg-dark_black"
                 : null
             } `}
           >
-            <div className="flex items-center">
-              <Logo />
-            </div>
+            <Image
+              width={100}
+              height={50}
+              src={"/images/logo/logo.png"}
+              alt="Deneme"
+            />
+            {/* <Logo /> */}
             <div className="hidden lg:flex bg-dark_black/5 dark:bg-white/5 rounded-3xl p-3">
               <ul className="flex gap-0 2xl:gap-1.5">
                 {headerData?.map((item, index) => (
